@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json.Serialization;
 using System.Xml;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
@@ -11,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using tbcpay.services.Dto.ProviderDto.Request;
 using tbcpay.services.Extensions;
+using tbcpay.services.Helpers;
 
 namespace tbcpay
 {
@@ -35,10 +37,19 @@ namespace tbcpay
                         OmitXmlDeclaration = false
                     }));
                 })
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                })
                 .AddXmlSerializerFormatters()
                 .AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<BaseRequestValidator>());
 
-            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "tbcpay", Version = "v1" }); });
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "tbcpay", Version = "v1" });
+                c.SchemaFilter<EnumSchemaFilter>();   
+
+            });
             services.AddCustomFilters();
             services.AddInterfaces();
             services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });

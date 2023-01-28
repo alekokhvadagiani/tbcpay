@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using tbcpay.services.Dto.ProviderDto.Request;
 using tbcpay.services.Dto.ProviderDto.Response;
+using tbcpay.services.Helpers;
 using tbcpay.services.ProviderService.Abstracts;
 using tbcpay.services.ServiceFilters;
 
@@ -23,8 +24,12 @@ namespace tbcpay.Controllers
         }
 
         [HttpGet]
-        public IActionResult Api() =>
-            BadRequest();
+        public BaseResponse Api() =>
+             new()
+             {
+                Comment = "Invalid Operation",
+                Result= ProviderStatusCodes.GenericError
+            };
 
 
         [ApiExplorerSettings(IgnoreApi = true)]

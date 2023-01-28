@@ -24,7 +24,8 @@ namespace tbcpay.services.Middlewares
             {
                 var action = context.Request.Query;
                 var operation = action.First(x => x.Key == "command").Value;
-                if (!string.IsNullOrEmpty(operation)) context.Request.Path = context.Request.Path + '/' + operation;
+                if (!string.IsNullOrEmpty(operation)) 
+                    context.Request.Path = context.Request.Path + '/' + operation;
             }
 
             catch (Exception ex)
