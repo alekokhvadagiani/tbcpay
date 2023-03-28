@@ -39,7 +39,7 @@ namespace tbcpay.Controllers
 
         [ApiExplorerSettings(IgnoreApi = true)]
         [HttpGet("Pay")]
-        public string Pay([FromQuery] PayRequest request) => 
+        public Task<BaseResponse>  Pay([FromQuery] PayRequest request) => 
             _pay.Deposit(request);
     }
 }
