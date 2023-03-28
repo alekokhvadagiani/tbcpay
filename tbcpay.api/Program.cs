@@ -1,20 +1,56 @@
-using Microsoft.AspNetCore.Hosting;
+using System.Text.Json.Serialization;
+using System.Xml;
+using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
+using tbcpay.services.Dto.ProviderDto.Request;
+using tbcpay.services.Extensions;
+using tbcpay.services.Helpers;
 
-namespace tbcpay
-{
-    public class Program
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllers(options =>
     {
-        public static void Main(string[] args)
+        options.Filters.Add(new ProducesAttribute("application/xml"));
+        options.OutputFormatters.Add(new XmlSerializerOutputFormatter(new XmlWriterSettings
         {
-            CreateHostBuilder(args).Build().Run();
-        }
+            OmitXmlDeclaration = false
+        }));
+    })
+    .AddJsonOptions(options => { options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); })
+    .AddXmlSerializerFormatters();
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
-    }
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "tbcpay", Version = "v1" });
+    c.SchemaFilter<EnumSchemaFilter>();
+});
+builder.Services.AddCustomFilters();
+builder.Services.AddInterfaces();
+builder.Services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
+
+
+var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+    app.UseSwagger();
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "tbcpay.api v1"));
 }
+
+app.UseMiddlewares();
+
+app.UseHttpsRedirection();
+app.UseRouting();
+
+app.UseAuthorization();
+
+app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+
+app.Run();
