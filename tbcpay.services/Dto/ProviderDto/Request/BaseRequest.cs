@@ -5,7 +5,8 @@ namespace tbcpay.services.Dto.ProviderDto.Request
 {
     public class BaseRequest
     {
-        [FromQuery(Name = "command")] public Commands Command { get; set; }
+        [FromQuery(Name = "command")] 
+        public Commands Command { get; set; }
     }
 
     public enum Commands

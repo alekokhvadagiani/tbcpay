@@ -12,7 +12,8 @@ namespace tbcpay.services.Dto.ProviderDto.Response
     [XmlRoot(ElementName = "extra")]
     public class Extra
     {
-        [XmlAttribute(AttributeName = "name")] public string Name { get; set; }
+        [XmlAttribute(AttributeName = "name")] 
+        public string Name { get; set; }
         [XmlText] public string Text { get; set; }
     }
 
@@ -20,6 +21,7 @@ namespace tbcpay.services.Dto.ProviderDto.Response
     [XmlRoot(ElementName = "info")]
     public class Info
     {
-        [XmlElement(ElementName = "extra")] public List<Extra> Extra { get; set; }
+        [XmlElement(ElementName = "extra")]
+        public List<Extra> Extra { get; set; }
     }
 }
