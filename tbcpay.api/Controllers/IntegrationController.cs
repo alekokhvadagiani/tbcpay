@@ -34,12 +34,12 @@ namespace tbcpay.Controllers
 
         [ApiExplorerSettings(IgnoreApi = true)]
         [HttpGet("Check")]
-        public Task<BaseResponse> Check([FromQuery] CheckRequest request) =>
-            _check.CheckCommand(request);
+        public async Task<BaseResponse> Check([FromQuery] CheckRequest request) =>
+            await _check.CheckCommand(request);
 
         [ApiExplorerSettings(IgnoreApi = true)]
         [HttpGet("Pay")]
-        public Task<BaseResponse>  Pay([FromQuery] PayRequest request) => 
-            _pay.Deposit(request);
+        public async Task<BaseResponse>  Pay([FromQuery] PayRequest request) => 
+           await _pay.Deposit(request);
     }
 }
