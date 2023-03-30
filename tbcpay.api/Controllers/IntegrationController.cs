@@ -22,15 +22,24 @@ namespace tbcpay.Controllers
             _pay = pay;
             _check = check;
         }
-
-        [HttpGet]
-        public BaseResponse Api() =>
-             new()
-             {
-                Comment = "Invalid Operation",
-                Result= ProviderStatusCodes.GenericError
+        
+        [HttpGet("{commandName?}")]
+        public BaseResponse Api(string commandName)
+        {
+            if (string.IsNullOrEmpty(commandName))
+            {
+                return new BaseResponse
+                {
+                    Comment = "'command' query parameter is required",
+                    Result = ProviderStatusCodes.GenericError
+                };
+            }
+            return new BaseResponse
+            {
+                Comment = $"Unknown command {commandName}",
+                Result = ProviderStatusCodes.GenericError
             };
-
+        }
 
         [ApiExplorerSettings(IgnoreApi = true)]
         [HttpGet("Check")]
