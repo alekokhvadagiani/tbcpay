@@ -10,7 +10,6 @@ namespace tbcpay.services.ServiceFilters
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            
             var modelState = context.ModelState.IsValid;
            
             if (!modelState)
@@ -38,7 +37,7 @@ namespace tbcpay.services.ServiceFilters
                 else
                 {
                     message = "Validation error happened";
-                    code =ProviderStatusCodes.GenericError;
+                    code = ProviderStatusCodes.GenericError;
                 }
                 
                 context.Result = new BadRequestObjectResult(new BaseResponse

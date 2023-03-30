@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using tbcpay.services.Dto.ProviderDto.Request;
 using tbcpay.services.Extensions;
 using tbcpay.services.Helpers;
 
