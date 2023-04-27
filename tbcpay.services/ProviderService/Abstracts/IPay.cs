@@ -1,7 +1,3 @@
-using System.Threading.Tasks;
-using tbcpay.services.Dto.ProviderDto.Request;
-using tbcpay.services.Dto.ProviderDto.Response;
-
 namespace tbcpay.services.ProviderService.Abstracts;
 
 public interface IPay

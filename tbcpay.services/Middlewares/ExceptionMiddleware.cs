@@ -1,15 +1,3 @@
-using System;
-using System.IO;
-using System.Net;
-using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Serialization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using tbcpay.services.Dto.ProviderDto.Response;
-using tbcpay.services.Helpers;
-
 namespace tbcpay.services.Middlewares;
 
 public class ExceptionMiddleware

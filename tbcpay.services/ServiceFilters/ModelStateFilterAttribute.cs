@@ -1,12 +1,6 @@
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using tbcpay.services.Dto.ProviderDto.Response;
-using tbcpay.services.Helpers;
-
 namespace tbcpay.services.ServiceFilters
 {
-    public class ModelStateFilter : ActionFilterAttribute
+    public class ModelStateFilterAttribute : ActionFilterAttribute
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {

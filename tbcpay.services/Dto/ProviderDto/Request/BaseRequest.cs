@@ -1,8 +1,5 @@
-using FluentValidation;
-using Microsoft.AspNetCore.Mvc;
+namespace tbcpay.services.Dto.ProviderDto.Request;
 
-namespace tbcpay.services.Dto.ProviderDto.Request
-{
     public class BaseRequest
     {
         [FromQuery(Name = "command")] 
@@ -16,4 +13,3 @@ namespace tbcpay.services.Dto.ProviderDto.Request
             RuleFor(a => a.Command).IsInEnum();
         }
     }
-}

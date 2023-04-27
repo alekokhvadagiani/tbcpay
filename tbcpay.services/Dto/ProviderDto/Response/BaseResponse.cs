@@ -1,6 +1,3 @@
-using System.Xml.Serialization;
-using tbcpay.services.Helpers;
-
 namespace tbcpay.services.Dto.ProviderDto.Response
 {
     [XmlInclude(typeof(InfoResponse))]
