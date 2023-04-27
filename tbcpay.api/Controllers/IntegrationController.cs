@@ -1,26 +1,25 @@
-namespace tbcpay.Controllers
+namespace tbcpay.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+[ServiceFilter(typeof(ModelStateFilter))]
+
+public class IntegrationController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    [ServiceFilter(typeof(ModelStateFilter))]
+    private readonly IPay _pay;
+    private readonly ICheck _check;
 
-    public class IntegrationController : ControllerBase
+    public IntegrationController(IPay pay, ICheck check)
     {
-        private readonly IPay _pay;
-        private readonly ICheck _check;
-
-        public IntegrationController(IPay pay, ICheck check)
-        {
-            _pay = pay;
-            _check = check;
-        }
-
-        [HttpPost("Check")]
-        public async Task<BaseResponse> Check([FromBody] CheckRequest request) =>
-            await _check.CheckCommand(request);
-
-        [HttpPost("Pay")]
-        public async Task<BaseResponse> Pay([FromBody] PayRequest request) =>
-           await _pay.Deposit(request);
+        _pay = pay;
+        _check = check;
     }
+
+    [HttpPost("Check")]
+    public async Task<BaseResponse> Check([FromBody] CheckRequest request) =>
+        await _check.CheckCommand(request);
+
+    [HttpPost("Pay")]
+    public async Task<BaseResponse> Pay([FromBody] PayRequest request) =>
+       await _pay.Deposit(request);
 }
