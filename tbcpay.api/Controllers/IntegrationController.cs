@@ -22,33 +22,23 @@ namespace tbcpay.Controllers
             _pay = pay;
             _check = check;
         }
-        
-        [HttpGet("{commandName?}")]
-        public BaseResponse Api(string commandName)
+
+        [HttpGet("{commandName}")]
+        public async Task<BaseResponse> Api(string commandName)
         {
-            if (string.IsNullOrEmpty(commandName))
+            switch (commandName.ToLower())
             {
-                return new BaseResponse
-                {
-                    Comment = "'command' query parameter is required",
-                    Result = ProviderStatusCodes.GenericError
-                };
+                case "check":
+                    return await _check.CheckCommand(Request.Query);
+                case "pay":
+                    return await _pay.Deposit(Request.Query);
+                default:
+                    return new BaseResponse
+                    {
+                        Comment = $"Unknown command {commandName}",
+                        Result = ProviderStatusCodes.GenericError
+                    };
             }
-            return new BaseResponse
-            {
-                Comment = $"Unknown command {commandName}",
-                Result = ProviderStatusCodes.GenericError
-            };
         }
-
-        [ApiExplorerSettings(IgnoreApi = true)]
-        [HttpGet("Check")]
-        public async Task<BaseResponse> Check([FromQuery] CheckRequest request) =>
-            await _check.CheckCommand(request);
-
-        [ApiExplorerSettings(IgnoreApi = true)]
-        [HttpGet("Pay")]
-        public async Task<BaseResponse>  Pay([FromQuery] PayRequest request) => 
-           await _pay.Deposit(request);
     }
 }
