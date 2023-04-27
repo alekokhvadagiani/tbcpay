@@ -1,70 +1,42 @@
-using System;
-using System.IO;
-using System.Net;
-using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Serialization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using tbcpay.services.Dto.ProviderDto.Response;
-using tbcpay.services.Helpers;
-
 namespace tbcpay.services.Middlewares;
 
-public class ExceptionMiddleware
+public class ExceptionMiddleware : IMiddleware
 {
-    private readonly RequestDelegate _next;
     private readonly ILogger<ExceptionMiddleware> _logger;
     private readonly IHostEnvironment _env;
+    private readonly XmlWriterSettings _xmlSettings = new XmlWriterSettings { Async = true };
 
-    public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger, IHostEnvironment env)
+    public ExceptionMiddleware(ILogger<ExceptionMiddleware> logger, IHostEnvironment env)
     {
-        _next = next;
         _logger = logger;
         _env = env;
     }
 
-    public async Task InvokeAsync(HttpContext context)
+    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
         try
         {
-            await _next(context);
+            await next(context);
         }
         catch (Exception e)
         {
-            var xmlSettings = new XmlWriterSettings
+            _logger.LogInformation(e, "An error occurred while processing the request.");
+
+            var response = new BaseResponse
             {
-                Async = true
+                Comment = _env.IsDevelopment() ? e.Message : "Internal Server Error",
+                Result = ProviderStatusCodes.GenericError
             };
+
             context.Response.ContentType = "application/xml";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            var response = _env.IsDevelopment()
-                ? new BaseResponse
-                {
-                    Comment = e.Message,
-                    Result = ProviderStatusCodes.GenericError
-                }
-                : new BaseResponse
-                {
-                    Comment = "Internal Server Error",
-                    Result = ProviderStatusCodes.GenericError
-                };
 
-            _logger.LogInformation("{Exception}", e.Message);
+            await using var stringWriter = new StringWriter();
+            using var writer = XmlWriter.Create(stringWriter, _xmlSettings);
             var xsSubmit = new XmlSerializer(typeof(BaseResponse));
-            string xml;
+            xsSubmit.Serialize(writer, response);
 
-            await using (var stringWriter = new StringWriter())
-            {
-                await using (var writer = XmlWriter.Create(stringWriter, xmlSettings))
-                {
-                    xsSubmit.Serialize(writer, response);
-                    xml = stringWriter.ToString();
-                }
-            }
-
-            await context.Response.WriteAsync(xml);
+            await context.Response.WriteAsync(stringWriter.ToString());
         }
     }
 }

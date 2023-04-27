@@ -1,22 +1,15 @@
-using System;
-using System.Linq;
-using Microsoft.OpenApi.Any;
-using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.SwaggerGen;
+namespace tbcpay.services.Helpers;
 
-namespace tbcpay.services.Helpers
+public class EnumSchemaFilter : ISchemaFilter
 {
-    public class EnumSchemaFilter : ISchemaFilter
+    public void Apply(OpenApiSchema model, SchemaFilterContext context)
     {
-        public void Apply(OpenApiSchema model, SchemaFilterContext context)
+        if (context.Type.IsEnum)
         {
-            if (context.Type.IsEnum)
-            {
-                model.Enum.Clear();
-                Enum.GetNames(context.Type)
-                    .ToList()
-                    .ForEach(name => model.Enum.Add(new OpenApiString($"{name} - {Convert.ToInt64(Enum.Parse(context.Type, name))}")));
-            }
+            model.Enum.Clear();
+            Enum.GetNames(context.Type)
+                .ToList()
+                .ForEach(name => model.Enum.Add(new OpenApiString($"{name} - {Convert.ToInt64(Enum.Parse(context.Type, name))}")));
         }
     }
 }

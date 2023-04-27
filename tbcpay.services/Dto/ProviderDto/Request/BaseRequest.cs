@@ -1,19 +1,15 @@
-using FluentValidation;
-using Microsoft.AspNetCore.Mvc;
+namespace tbcpay.services.Dto.ProviderDto.Request;
 
-namespace tbcpay.services.Dto.ProviderDto.Request
+public class BaseRequest
 {
-    public class BaseRequest
+    [FromQuery(Name = "command")] 
+    public string Command { get; set; }
+}
+public class BaseRequestValidator : AbstractValidator<BaseRequest>
+{
+    public BaseRequestValidator()
     {
-        [FromQuery(Name = "command")] 
-        public string Command { get; set; }
-    }
-    public class BaseRequestValidator : AbstractValidator<BaseRequest>
-    {
-        public BaseRequestValidator()
-        {
-            RuleFor(a => a.Command).NotEmpty().NotNull();
-            RuleFor(a => a.Command).IsInEnum();
-        }
+        RuleFor(a => a.Command).NotEmpty().NotNull();
+        RuleFor(a => a.Command).IsInEnum();
     }
 }

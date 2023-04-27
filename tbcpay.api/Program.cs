@@ -1,21 +1,10 @@
-using System.Text.Json.Serialization;
-using System.Xml;
-using FluentValidation;
-using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Formatters;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
-using tbcpay.services.Dto.ProviderDto.Request;
-using tbcpay.services.Helpers;
-using tbcpay.services.Middlewares;
-using tbcpay.services.ProviderService;
-using tbcpay.services.ProviderService.Abstracts;
-using tbcpay.services.ServiceFilters;
-
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddScoped<ICheck, Check>();
+builder.Services.AddScoped<IPay, Pay>();
+
+builder.Services.AddTransient<CommandMiddleware>();
+builder.Services.AddTransient<ExceptionMiddleware>();
 
 builder.Services.AddControllers(options =>
     {
@@ -28,9 +17,7 @@ builder.Services.AddControllers(options =>
     .AddJsonOptions(options => { options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()); })
     .AddXmlSerializerFormatters();
 
-
 builder.Services.AddValidatorsFromAssemblyContaining<BaseRequestValidator>().AddFluentValidationAutoValidation();
-
 
 builder.Services.AddSwaggerGen(c =>
 {
@@ -41,11 +28,7 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddScoped<ModelStateFilter>();
 
-builder.Services.AddScoped<ICheck, Check>();
-builder.Services.AddScoped<IPay, Pay>();
-
 builder.Services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
-
 
 var app = builder.Build();
 
@@ -56,7 +39,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "tbcpay.api v1"));
 }
 
-app.UseMiddleware<ActionRedirectionMiddleware>();
+app.UseMiddleware<CommandMiddleware>();
 app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();

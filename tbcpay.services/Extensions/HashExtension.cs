@@ -1,6 +1,3 @@
-using System.Security.Cryptography;
-using System.Text;
-
 namespace tbcpay.services.Extensions;
 
 public static class HashExtension

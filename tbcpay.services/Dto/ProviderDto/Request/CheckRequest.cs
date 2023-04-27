@@ -1,18 +1,11 @@
-using FluentValidation;
-using Microsoft.AspNetCore.Mvc;
-using tbcpay.services.Dto.ProviderDto.Request;
-using tbcpay.services.Helpers;
+namespace tbcpay.services.Dto.ProviderDto.Request;
 
-namespace tbcpay.services.Dto.ProviderDto.Request
+public class CheckRequest : BaseRequest
 {
-    public class CheckRequest : BaseRequest
-    {
-        [FromQuery(Name = "account")] 
+    [FromQuery(Name = "account")] 
 
-        public string Account { get; set; }
-    }
+    public string Account { get; set; }
 }
-
 
 public class CheckValidator : AbstractValidator<CheckRequest>
 {
