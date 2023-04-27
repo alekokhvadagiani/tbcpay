@@ -19,21 +19,21 @@ namespace tbcpay.services.Middlewares
         }
 
         public async Task Invoke(HttpContext context)
-        {
-            try
-            {
-                var action = context.Request.Query;
-                var operation = action.First(x => x.Key == "command").Value;
-                if (!string.IsNullOrEmpty(operation)) 
-                    context.Request.Path = context.Request.Path + '/' + operation;
-            }
+{
+    try
+    {
+        var action = context.Request.Query;
+        var operation = action.First(x => x.Key == "command").Value;
+        if (!string.IsNullOrEmpty(operation))
+            context.Request.Path = $"/api/integration/{operation.ToLower()}";
+    }
 
-            catch (Exception ex)
-            {
-                _logger.LogInformation("{Message}", ex.Message);
-            }
+    catch (Exception ex)
+    {
+        _logger.LogInformation("{Message}", ex.Message);
+    }
 
-            await _next.Invoke(context);
-        }
+    await _next.Invoke(context);
+}
     }
 }
