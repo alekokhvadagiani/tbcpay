@@ -10,7 +10,7 @@ namespace tbcpay.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [ServiceFilter(typeof(ModelStateFilter))]
+    [ServiceFilter(typeof(ModelStateFilterAttribute))]
 
     public class IntegrationController : ControllerBase
     {

@@ -39,7 +39,7 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 
-builder.Services.AddScoped<ModelStateFilter>();
+builder.Services.AddScoped<ModelStateFilterAttribute>();
 
 builder.Services.AddScoped<ICheck, Check>();
 builder.Services.AddScoped<IPay, Pay>();
